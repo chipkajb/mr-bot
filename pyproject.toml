@@ -1,0 +1,55 @@
+[project]
+name = "mr-bot"
+version = "0.1.0"
+description = "Prepare GitLab merge requests for AI code review"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "python-gitlab>=3.15.0",
+    "gitpython>=3.1.40",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+mr-bot = "main:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = [
+    "config",
+    "diff_processor",
+    "file_filter",
+    "gitlab_fetcher",
+    "main",
+    "output_generator",
+]
+
+[tool.poe.tasks]
+format = "ruff format ."
+lint = "ruff check . --fix"
+typecheck = "mypy ."
+precommit = ['format', 'lint', 'typecheck']
+
+[tool.uv]
+package = true
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[tool.ruff]
+# Same as Black.
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = ["E501", "E402", "RUF012", "G004", "N806"]
+select = ["I", "E", "F", "A", "B", "N", "Q", "RUF", "C", "DTZ", "ASYNC", "LOG", "G", "T20", "SIM", "NPY", "PERF"]
+
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = ["filter"]
