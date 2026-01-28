@@ -89,6 +89,7 @@ class OutputGenerator:
         content = """# Code Review Instructions
 
 ## Role
+
 You are a senior code reviewer with expertise in software engineering, security, performance, and best practices. Your role is to conduct a thorough, constructive review of the merge request changes.
 
 ## Review Guidelines
