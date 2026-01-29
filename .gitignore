@@ -63,6 +63,7 @@ dmypy.json
 # Project-specific output
 output/
 *.diff
+cursor_prompts.txt
 
 # OS-specific
 .DS_Store
