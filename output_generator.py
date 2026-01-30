@@ -213,7 +213,7 @@ Review the following diff files in the `diffs/` directory:
 - Suggest improvements, not just point out problems
 - If something is unclear, ask questions rather than making assumptions
 
-Begin your review now. Review all diff files and provide your findings in the structured format above.
+Begin your review now. Review all diff files and provide your findings in the structured format above. Write your review to the file `output/code_review.md`.
 """
 
         with open(prompt_path, "w", encoding="utf-8") as file_handle:
