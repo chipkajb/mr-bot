@@ -281,16 +281,24 @@ def main() -> None:
         text=True,
         check=True,
     )
-    stashed = bool(status_result.stdout.strip())
-    if stashed:
-        run_cmd(
+    had_changes = bool(status_result.stdout.strip())
+    actually_stashed = False
+    if had_changes:
+        stash_result = subprocess.run(
             ["git", "stash", "push", "-m", "mr-bot pipeline: stashed before checkout"],
             cwd=target_repo,
+            capture_output=True,
+            text=True,
+            check=True,
         )
-        console.print("  [yellow]⚠[/] Local changes were [yellow]stashed[/] so the branch could be checked out.")
+        # git stash push prints "No local changes to save" when there was nothing to stash (e.g. only untracked)
+        combined = (stash_result.stdout or "") + (stash_result.stderr or "")
+        actually_stashed = "No local changes to save" not in combined
+        if actually_stashed:
+            console.print("  [yellow]⚠[/] Local changes were [yellow]stashed[/] so the branch could be checked out.")
     run_cmd(["git", "fetch", "origin", branch], cwd=target_repo, check=False)
     run_cmd(["git", "checkout", branch], cwd=target_repo)
-    if stashed:
+    if actually_stashed:
         console.print("  [dim]To restore later:[/] [cyan]git stash pop[/]\n")
     else:
         console.print("  [green]✓[/] Checked out [bold]{0}[/]\n".format(branch))
@@ -315,7 +323,7 @@ def main() -> None:
         "  [cyan]git status[/]",
         "  [cyan]git diff[/]",
     ]
-    if stashed:
+    if actually_stashed:
         review_lines.append("")
         review_lines.append("  [dim](Your earlier local changes were stashed. Restore with: [cyan]git stash pop[/])")
     review_lines.append("")
