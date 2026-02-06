@@ -91,7 +91,38 @@ output/
     └── ...
 ```
 
-## Workflow
+## Pipeline (automated review → fix)
+
+For a full pipeline (fetch MR → code review agent → copy review to target repo → checkout branch → fix agent), use a config file and the pipeline script:
+
+1. Copy the example config and edit:
+
+   ```bash
+   cp pipeline_config.yaml.example pipeline_config.yaml
+   # Edit pipeline_config.yaml: set project_id, mr, and optionally branch, workspace_root, repo_name.
+   ```
+
+2. Ensure the [Cursor CLI](https://cursor.com/docs/cli/overview) is installed and authenticated (`agent` or `cursor-agent`).
+
+3. Run the pipeline:
+
+   ```bash
+   uv run run_pipeline.py
+   ```
+
+4. The script will:
+   - Run `main.py --project-id <project_id> --mr <mr>` to fetch the MR and generate `output/` (diffs, review_prompt.md).
+   - Run the Cursor agent in this repo to perform the code review and write `output/code_review.md`.
+   - Copy `code_review.md` into the target repo.
+   - Check out the MR source branch in the target repo (any local changes are stashed first; you are informed and can restore them with `git stash pop`).
+   - Run the Cursor agent in the target repo to fix the code per `code_review.md` (optionally with `apply_fixes: true` to apply changes).
+   - Print instructions to review changes with `git diff` / `git status`.
+
+5. Manually review and commit (or revert) in the target repo as needed.
+
+Config options: `project_id`, `mr`, `output`, `workspace_root`, `repo_name`, `branch` (optional; read from MR info if omitted), `cursor_cli`, `apply_fixes`.
+
+## Workflow (manual)
 
 1. **Run the tool**: `uv run main.py --mr 42` or `uv run main.py --branch feature/x`
 2. **Review the output**: Check the generated files in the output directory

@@ -62,6 +62,7 @@ dmypy.json
 
 # Project-specific output
 output/
+pipeline_config.yaml
 *.diff
 cursor_prompts.txt
 

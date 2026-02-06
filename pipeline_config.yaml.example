@@ -1,0 +1,28 @@
+# Pipeline configuration for MR Bot: fetch MR → code review → copy to repo → apply fixes.
+# Copy to pipeline_config.yaml and fill in values.
+
+# GitLab project ID (required when using --mr). Repo name is derived as the last segment
+# unless repo_name is set.
+project_id: "<gitlab-project-id>"
+
+# Merge request IID (required for MR-based flow).
+mr: <int>
+
+# Output directory for main.py (diffs, review_prompt.md, MR info). Relative to mr-bot repo.
+output: "./<output-directory>"
+
+# Root directory where target repos live. Repo will be at {workspace_root}/{repo_name}.
+workspace_root: "~/<workspace-directory>"
+
+# Target repo directory name. Default: last segment of project_id.
+# repo_name: "<repo-name>"
+
+# Source branch to checkout in the target repo. If not set, read from output/MR_{mr}_info.md.
+# branch: "<branch-name>"
+
+# Cursor CLI command (agent or cursor-agent depending on install).
+cursor_cli: "agent"
+
+# If true, the fix step will apply file changes (--force). If false, agent only proposes changes
+# for you to review in the CLI. After applying, review with: git diff && git status.
+apply_fixes: true
